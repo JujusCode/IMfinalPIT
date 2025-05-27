@@ -139,7 +139,7 @@ $wards = executeQuery("SELECT * FROM Wards ORDER BY ward_number");
     }
 
     .container {
-        width: 1140px;
+        width: 1450px;
         max-width: 90%;
         margin: 0 auto;
         padding: 20px;
@@ -454,6 +454,10 @@ $wards = executeQuery("SELECT * FROM Wards ORDER BY ward_number");
                                     Staff</a>
                                 <a href="ward_patients.php?ward=<?php echo $ward['ward_number']; ?>" class="btn">View
                                     Patients</a>
+                                <a href="ward_requisitions.php" class="btn">View
+                                    Requisitions</a>
+                                <a href="ward_supplies.php?ward=<?php echo $ward['ward_number']; ?>" class="btn">View
+                                    Supplies</a>
                             </td>
                         </tr>
                         <?php endforeach; ?>

@@ -12,13 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 :appointment_number, :patient_number, :staff_number, 
                 :date_time, :examination_room
             )", [
-                'appointment_number' => $_POST['appointment_number'],
-                'patient_number' => $_POST['patient_number'],
-                'staff_number' => $_POST['staff_number'],
-                'date_time' => $_POST['date'] . ' ' . $_POST['time'],
-                'examination_room' => $_POST['examination_room']
-            ]);
-        
+            'appointment_number' => $_POST['appointment_number'],
+            'patient_number' => $_POST['patient_number'],
+            'staff_number' => $_POST['staff_number'],
+            'date_time' => $_POST['date'] . ' ' . $_POST['time'],
+            'examination_room' => $_POST['examination_room']
+        ]);
+
         if ($result > 0) {
             $success = "Appointment scheduled successfully!";
         } else {
@@ -56,276 +56,276 @@ $doctors = executeQuery("
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointments - Wellmeadows Hospital</title>
     <style>
-    :root {
-        --primary-color: #3498db;
-        --secondary-color: #2c3e50;
-        --success-color: #2ecc71;
-        --danger-color: #e74c3c;
-        --warning-color: #f39c12;
-        --light-color: #ecf0f1;
-        --dark-color: #34495e;
-    }
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Arial', sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
 
-    body {
-        background-color: #f5f7fa;
-        color: #333;
-        line-height: 1.6;
-    }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
 
-    .container {
-        width: 1140px;
-        max-width: 90%;
-        margin: 0 auto;
-        padding: 20px;
-    }
+        .container {
+            width: 1140px;
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-    header {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 1rem 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    header .container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
 
-    nav ul {
-        display: flex;
-        list-style: none;
-    }
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
 
-    nav ul li {
-        margin-left: 20px;
-    }
+        nav ul li {
+            margin-left: 20px;
+        }
 
-    nav ul li a {
-        color: white;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
 
-    nav ul li a:hover {
-        color: var(--light-color);
-    }
+        nav ul li a:hover {
+            color: var(--light-color);
+        }
 
-    main {
-        padding: 2rem 0;
-    }
+        main {
+            padding: 2rem 0;
+        }
 
-    .card {
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin-bottom: 20px;
-    }
+        .card {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    .card-header {
-        border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: var(--secondary-color);
-    }
+        .card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
 
-    .table-container {
-        overflow-x: auto;
-    }
+        .table-container {
+            overflow-x: auto;
+        }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-    table,
-    th,
-    td {
-        border: 1px solid #ddd;
-    }
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
 
-    th,
-    td {
-        padding: 12px 15px;
-        text-align: left;
-    }
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+        }
 
-    th {
-        background-color: var(--primary-color);
-        color: white;
-    }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-    tr:hover {
-        background-color: #e9e9e9;
-    }
+        tr:hover {
+            background-color: #e9e9e9;
+        }
 
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 4px;
-        background-color: var(--primary-color);
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
 
-    .btn:hover {
-        background-color: #2980b9;
-    }
+        .btn:hover {
+            background-color: #2980b9;
+        }
 
-    .btn-success {
-        background-color: var(--success-color);
-    }
+        .btn-success {
+            background-color: var(--success-color);
+        }
 
-    .btn-success:hover {
-        background-color: #27ae60;
-    }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
 
-    .btn-danger {
-        background-color: var(--danger-color);
-    }
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
 
-    .btn-danger:hover {
-        background-color: #c0392b;
-    }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-    .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-    .form-control {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
-    }
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
 
-    .form-control:focus {
-        border-color: var(--primary-color);
-        outline: none;
-    }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
 
-    .alert {
-        padding: 10px 15px;
-        border-radius: 4px;
-        margin-bottom: 15px;
-    }
+        .alert {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
 
-    .alert-success {
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-    }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
 
-    .alert-danger {
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
 
-    .form-row {
-        display: flex;
-        flex-wrap: wrap;
-        margin-right: -10px;
-        margin-left: -10px;
-    }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -10px;
+            margin-left: -10px;
+        }
 
-    .form-col {
-        flex: 1;
-        padding: 0 10px;
-        min-width: 200px;
-    }
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
 
-    footer {
-        background-color: var(--secondary-color);
-        color: white;
-        padding: 1rem 0;
-        text-align: center;
-        margin-top: 2rem;
-    }
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
 
-    .search-box {
-        margin-bottom: 20px;
-        display: flex;
-    }
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+        }
 
-    .search-box input {
-        flex: 1;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px 0 0 4px;
-    }
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
 
-    .search-box button {
-        padding: 10px 15px;
-        border: none;
-        background-color: var(--primary-color);
-        color: white;
-        border-radius: 0 4px 4px 0;
-        cursor: pointer;
-    }
+        .search-box button {
+            padding: 10px 15px;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
 
-    .pagination {
-        display: flex;
-        justify-content: center;
-        list-style: none;
-        margin-top: 20px;
-    }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin-top: 20px;
+        }
 
-    .pagination li {
-        margin: 0 5px;
-    }
+        .pagination li {
+            margin: 0 5px;
+        }
 
-    .pagination a {
-        display: block;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-        text-decoration: none;
-        color: var(--primary-color);
-        border-radius: 4px;
-    }
+        .pagination a {
+            display: block;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: var(--primary-color);
+            border-radius: 4px;
+        }
 
-    .pagination a:hover,
-    .pagination .active a {
-        background-color: var(--primary-color);
-        color: white;
-    }
+        .pagination a:hover,
+        .pagination .active a {
+            background-color: var(--primary-color);
+            color: white;
+        }
 
-    .pagination .disabled a {
-        color: #aaa;
-        pointer-events: none;
-    }
+        .pagination .disabled a {
+            color: #aaa;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -352,10 +352,10 @@ $doctors = executeQuery("
         <h1>Appointment Management</h1>
 
         <?php if (isset($success)): ?>
-        <div class="alert alert-success"><?php echo $success; ?></div>
+            <div class="alert alert-success"><?php echo $success; ?></div>
         <?php endif; ?>
         <?php if (isset($error)): ?>
-        <div class="alert alert-danger"><?php echo $error; ?></div>
+            <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
 
         <div class="card">
@@ -372,9 +372,9 @@ $doctors = executeQuery("
                         <select class="form-control" id="patient_number" name="patient_number" required>
                             <option value="">-- Select Patient --</option>
                             <?php foreach ($patients as $patient): ?>
-                            <option value="<?php echo $patient['patient_number']; ?>">
-                                <?php echo htmlspecialchars($patient['last_name'] . ', ' . $patient['first_name']); ?>
-                            </option>
+                                <option value="<?php echo $patient['patient_number']; ?>">
+                                    <?php echo htmlspecialchars($patient['last_name'] . ', ' . $patient['first_name']); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -383,9 +383,9 @@ $doctors = executeQuery("
                         <select class="form-control" id="staff_number" name="staff_number" required>
                             <option value="">-- Select Doctor --</option>
                             <?php foreach ($doctors as $doctor): ?>
-                            <option value="<?php echo $doctor['staff_number']; ?>">
-                                <?php echo htmlspecialchars($doctor['last_name'] . ', ' . $doctor['first_name']); ?>
-                            </option>
+                                <option value="<?php echo $doctor['staff_number']; ?>">
+                                    <?php echo htmlspecialchars($doctor['last_name'] . ', ' . $doctor['first_name']); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -402,6 +402,7 @@ $doctors = executeQuery("
                         <input type="text" class="form-control" id="examination_room" name="examination_room" required>
                     </div>
                     <button type="submit" name="add_appointment" class="btn btn-success">Schedule Appointment</button>
+                    <a href="out_patients_report.php" class="btn">View out-patients list</a>
                 </form>
             </div>
         </div>
@@ -422,28 +423,28 @@ $doctors = executeQuery("
                     </thead>
                     <tbody>
                         <?php if (empty($appointments)): ?>
-                        <tr>
-                            <td colspan="6" style="text-align: center;">No appointments found</td>
-                        </tr>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">No appointments found</td>
+                            </tr>
                         <?php else: ?>
-                        <?php foreach ($appointments as $appointment): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($appointment['appointment_number']); ?></td>
-                            <td><?php echo htmlspecialchars($appointment['patient_last'] . ', ' . $appointment['patient_first']); ?>
-                            </td>
-                            <td>Dr.
-                                <?php echo htmlspecialchars($appointment['staff_last'] . ', ' . $appointment['staff_first']); ?>
-                            </td>
-                            <td><?php echo date('d-M-Y H:i', strtotime($appointment['date_time'])); ?></td>
-                            <td><?php echo htmlspecialchars($appointment['examination_room']); ?></td>
-                            <td>
-                                <a href="appointment_details.php?id=<?php echo $appointment['appointment_number']; ?>"
-                                    class="btn">View</a>
-                                <a href="cancel_appointment.php?id=<?php echo $appointment['appointment_number']; ?>"
-                                    class="btn btn-danger">Cancel</a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
+                            <?php foreach ($appointments as $appointment): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($appointment['appointment_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($appointment['patient_last'] . ', ' . $appointment['patient_first']); ?>
+                                    </td>
+                                    <td>Dr.
+                                        <?php echo htmlspecialchars($appointment['staff_last'] . ', ' . $appointment['staff_first']); ?>
+                                    </td>
+                                    <td><?php echo date('d-M-Y H:i', strtotime($appointment['date_time'])); ?></td>
+                                    <td><?php echo htmlspecialchars($appointment['examination_room']); ?></td>
+                                    <td>
+                                        <a href="appointment_details.php?id=<?php echo $appointment['appointment_number']; ?>"
+                                            class="btn">View</a>
+                                        <a href="cancel_appointment.php?id=<?php echo $appointment['appointment_number']; ?>"
+                                            class="btn btn-danger">Cancel</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
                 </table>

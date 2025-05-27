@@ -80,7 +80,7 @@ $wards = executeQuery("SELECT ward_number, ward_name FROM Wards ORDER BY ward_nu
     }
 
     .container {
-        width: 1140px;
+        width: 1400px;
         max-width: 90%;
         margin: 0 auto;
         padding: 20px;
@@ -221,6 +221,9 @@ $wards = executeQuery("SELECT ward_number, ward_name FROM Wards ORDER BY ward_nu
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
+    }
+    .filter-form select{
+        margin-bottom: 10px;
     }
 
     .form-control {

@@ -6,6 +6,9 @@ $message = '';
 $messageType = '';
 $supply = null;
 $isEditing = false;
+$viewingSupplier = false;
+$currentSupplier = null;
+$supplierItems = [];
 
 // Handle form submission for adding/updating a supply
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -188,14 +191,49 @@ if (isset($_GET['edit'])) {
     }
 }
 
-// Get all supplies
+// Handle supplier view
+if (isset($_GET['view_supplier'])) {
+    $supplier_number = $_GET['view_supplier'];
+    $currentSupplier = getSingleRecord(
+        "SELECT * FROM Suppliers WHERE supplier_number = ?",
+        [$supplier_number]
+    );
+    
+    if ($currentSupplier) {
+        $viewingSupplier = true;
+        $supplierItems = executeQuery(
+            "SELECT si.supply_id, 
+                    COALESCE(ss.item_name, ps.drug_name) AS item_name,
+                    COALESCE(ss.item_number, ps.drug_number) AS item_number,
+                    CASE 
+                        WHEN ss.item_number IS NOT NULL THEN 'Surgical'
+                        ELSE 'Pharmaceutical'
+                    END AS item_type,
+                    COALESCE(ss.cost_per_unit, ps.cost_per_unit) AS cost_per_unit
+             FROM Supply_Items si
+             LEFT JOIN Surgical_Supplies ss ON si.item_number = ss.item_number
+             LEFT JOIN Pharmaceutical_Supplies ps ON si.drug_number = ps.drug_number
+             WHERE si.supplier_number = ?",
+            [$supplier_number]
+        );
+    }
+}
+
+// Handle back from supplier view
+if (isset($_GET['back'])) {
+    $viewingSupplier = false;
+    $currentSupplier = null;
+    $supplierItems = [];
+}
+
+// Get all data
 $pharmaceuticalSupplies = executeQuery("SELECT * FROM Pharmaceutical_Supplies ORDER BY drug_name");
 $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_name");
+$suppliers = executeQuery("SELECT * FROM Suppliers ORDER BY supplier_name");
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -301,14 +339,11 @@ $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_
         margin-bottom: 20px;
     }
 
-    table,
-    th,
-    td {
+    table, th, td {
         border: 1px solid #ddd;
     }
 
-    th,
-    td {
+    th, td {
         padding: 12px 15px;
         text-align: left;
     }
@@ -427,6 +462,21 @@ $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_
         text-align: center;
         margin-top: 2rem;
     }
+
+    /* Supplier View Styles */
+    .supplier-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    .supplier-details h3 {
+        margin-bottom: 15px;
+        color: var(--secondary-color);
+    }
+    .supplier-details p {
+        margin-bottom: 5px;
+    }
     </style>
     <script>
     function toggleSupplyFields() {
@@ -476,6 +526,55 @@ $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_
         </div>
         <?php endif; ?>
 
+        <?php if ($viewingSupplier): ?>
+        <!-- Supplier View Section -->
+        <div class="card">
+            <div class="card-header">
+                Supplier Details
+                <a href="supplies.php?back=1" class="btn" style="float: right;">Back to Supplies</a>
+            </div>
+            <div class="supplier-details">
+                <h3><?php echo htmlspecialchars($currentSupplier['supplier_name']); ?></h3>
+                <p><strong>Supplier Number:</strong> <?php echo htmlspecialchars($currentSupplier['supplier_number']); ?></p>
+                <p><strong>Address:</strong> <?php echo nl2br(htmlspecialchars($currentSupplier['address'])); ?></p>
+                <p><strong>Telephone:</strong> <?php echo htmlspecialchars($currentSupplier['telephone']); ?></p>
+                <?php if (!empty($currentSupplier['fax'])): ?>
+                <p><strong>Fax:</strong> <?php echo htmlspecialchars($currentSupplier['fax']); ?></p>
+                <?php endif; ?>
+            </div>
+
+            <div class="card-header">Supplied Items</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Number</th>
+                            <th>Item Name</th>
+                            <th>Type</th>
+                            <th>Cost Per Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (count($supplierItems) > 0): ?>
+                        <?php foreach ($supplierItems as $item): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($item['item_number']); ?></td>
+                            <td><?php echo htmlspecialchars($item['item_name']); ?></td>
+                            <td><?php echo htmlspecialchars($item['item_type']); ?></td>
+                            <td>$<?php echo number_format($item['cost_per_unit'], 2); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No items supplied by this supplier.</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php else: ?>
+        <!-- Existing Supply Management Content -->
         <div class="card">
             <div class="card-header">
                 <?php echo $isEditing ? 'Edit Supply' : 'Add New Supply'; ?>
@@ -743,6 +842,43 @@ $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_
                 </table>
             </div>
         </div>
+
+        <!-- Suppliers Table Section -->
+        <div class="card">
+            <div class="card-header">Suppliers</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Supplier Number</th>
+                            <th>Supplier Name</th>
+                            <th>Telephone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (count($suppliers) > 0): ?>
+                        <?php foreach ($suppliers as $supplier): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($supplier['supplier_number']); ?></td>
+                            <td><?php echo htmlspecialchars($supplier['supplier_name']); ?></td>
+                            <td><?php echo htmlspecialchars($supplier['telephone']); ?></td>
+                            <td>
+                                <a href="supplies.php?view_supplier=<?php echo $supplier['supplier_number']; ?>" 
+                                   class="btn">View</a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                        <tr>
+                            <td colspan="4" style="text-align: center;">No suppliers found.</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php endif; ?>
     </main>
 
     <footer>
@@ -751,5 +887,4 @@ $surgicalSupplies = executeQuery("SELECT * FROM Surgical_Supplies ORDER BY item_
         </div>
     </footer>
 </body>
-
 </html>

@@ -15,11 +15,13 @@ try {
 
     // Set default fetch mode to associative array
     $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+    // For backward compatibility
     $pdo = $conn;
-    // echo "Connected successfully";
+
 } catch (PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    die();
+    error_log("Connection failed: " . $e->getMessage());
+    die("Database connection error. Please try again later.");
 }
 
 /**
@@ -36,7 +38,7 @@ function executeQuery($sql, $params = [])
         $stmt->execute($params);
         return $stmt->fetchAll();
     } catch (PDOException $e) {
-        echo "Query Error: " . $e->getMessage();
+        error_log("Query Error: " . $e->getMessage());
         return [];
     }
 }
@@ -55,7 +57,7 @@ function executeNonQuery($sql, $params = [])
         $stmt->execute($params);
         return $stmt->rowCount();
     } catch (PDOException $e) {
-        echo "Query Error: " . $e->getMessage();
+        error_log("Query Error: " . $e->getMessage());
         return 0;
     }
 }
@@ -72,12 +74,41 @@ function getSingleRecord($sql, $params = [])
     try {
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
-        $result = $stmt->fetch();
-        return $result ? $result : null;
+        return $stmt->fetch() ?: null;
     } catch (PDOException $e) {
-        echo "Query Error: " . $e->getMessage();
+        error_log("Query Error: " . $e->getMessage());
         return null;
     }
+}
+
+/**
+ * Function to begin a transaction
+ * @return bool True on success, false on failure
+ */
+function beginTransaction()
+{
+    global $conn;
+    return $conn->beginTransaction();
+}
+
+/**
+ * Function to commit a transaction
+ * @return bool True on success, false on failure
+ */
+function commitTransaction()
+{
+    global $conn;
+    return $conn->commit();
+}
+
+/**
+ * Function to rollback a transaction
+ * @return bool True on success, false on failure
+ */
+function rollbackTransaction()
+{
+    global $conn;
+    return $conn->rollBack();
 }
 
 /**
